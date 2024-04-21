@@ -117,97 +117,7 @@ class _GetOtpScreenState extends State<GetOtpScreen> {
               SizedBox(
                 width: 150,
                 child: NeumorphicButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()  && !isLoading) {
-                      setState(() {
-                        isLoading = true;
-                      });
-
-                      if (widget.role == 'Student') {
-                        try {
-                          final response = await ApiService.studentLogin(
-                            widget.telcode,
-                            phoneController.text,
-                          );
-                          setState(() {
-                            isLoading = false;
-                          });
-                          if (response['success']) {
-                            CustomSnackbar.show(
-                              context: context,
-                              message: response['message'],
-                              textColor: Colors.green,
-                            );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => VerifyOtpScreen(
-                                  phone: phoneController.text,
-                                  countryCode: widget.telcode,
-                                ),
-                              ),
-                            );
-                          } else {
-                            CustomSnackbar.show(
-                              context: context,
-                              message: response['message'],
-                              textColor: Colors.red,
-                            );
-                          }
-                        } catch (error) {
-                          setState(() {
-                            isLoading = false;
-                          });
-                          CustomSnackbar.show(
-                            context: context,
-                            message: 'Failed to login',
-                            textColor: Colors.red,
-                          );
-                        }
-                      } else if (widget.role == 'Agent') {
-                        try {
-                          final response = await ApiService.counsellorLogin(
-                            widget.telcode,
-                            phoneController.text,
-                          );
-                          setState(() {
-                            isLoading = false;
-                          });
-                          if (response['success']) {
-                            CustomSnackbar.show(
-                              context: context,
-                              message: response['message'],
-                              textColor: Colors.green,
-                            );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => VerifyOtpScreen(
-                                  phone: phoneController.text,
-                                  countryCode: widget.telcode,
-                                ),
-                              ),
-                            );
-                          } else {
-                            CustomSnackbar.show(
-                              context: context,
-                              message: response['message'],
-                              textColor: Colors.red,
-                            );
-                          }
-                        } catch (error) {
-                          setState(() {
-                            isLoading = false;
-                          });
-                          CustomSnackbar.show(
-                            context: context,
-                            message: 'Failed to login',
-                            textColor: Colors.red,
-                          );
-                        }
-                      }
-                    }
-                  },
+                  onPressed: () =>_handleLogIn(),
                   style: NeumorphicStyle(
                     boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(20)),
                     depth: 2,
@@ -225,4 +135,63 @@ class _GetOtpScreenState extends State<GetOtpScreen> {
       ),
     );
   }
+  void _handleLogIn() async {
+    if (_formKey.currentState!.validate() && !isLoading) {
+      setState(() {
+        isLoading = true;
+      });
+
+      try {
+        final response = widget.role == 'Student'
+            ? await ApiService.studentLogin(
+          widget.telcode,
+          phoneController.text,
+        )
+            : await ApiService.counsellorLogin(
+          widget.telcode,
+          phoneController.text,
+        );
+
+        setState(() {
+          isLoading = false;
+        });
+
+        if (response['success']==true) {
+          CustomSnackbar.show(
+            context: context,
+            message: response['message'],
+            textColor: Colors.green,
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VerifyOtpScreen(
+                phone: phoneController.text,
+                countryCode: widget.telcode,
+              ),
+            ),
+          );
+        } else {
+          if (response['success'] == false ) {
+            CustomSnackbar.show(
+              context: context,
+              message: response['message'],
+              textColor: Colors.green,
+            );
+          }
+        }
+      } catch (error) {
+        setState(() {
+          isLoading = false;
+        });
+
+        CustomSnackbar.show(
+          context: context,
+          message: 'Failed to login',
+          textColor: Colors.red,
+        );
+      }
+    }
+  }
+
 }

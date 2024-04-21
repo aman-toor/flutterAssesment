@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_assesment/screens/auth_screens/welcome_screen.dart';
+import 'package:flutter_assesment/screens/welcome_screen.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 

@@ -102,6 +102,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                               ),
                         );
                       }
+                      return null;
                     }),
                   ),
                 ],

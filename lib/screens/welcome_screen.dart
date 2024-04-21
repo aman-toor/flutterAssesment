@@ -1,6 +1,6 @@
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter_assesment/screens/auth_screens/select_country_screen.dart';
+import 'package:flutter_assesment/screens/select_country_screen.dart';
 import 'package:flutter_assesment/screens/terms_and_conditions.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 

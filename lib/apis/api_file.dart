@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/global.dart';
 
 class ApiService {
@@ -40,7 +41,9 @@ class ApiService {
       final message = decodedResponse['message'];
       return {'success': true, 'message': message};
     } else {
-      return {'success': false, 'message': 'Failed to login'};
+      final jsonResponse = await response.stream.bytesToString();
+      final decodedResponse = json.decode(jsonResponse);
+      return {'success': false, 'message': decodedResponse['data']};
     }
   }
 
@@ -62,8 +65,9 @@ class ApiService {
 
     }
     else {
-      print(response.reasonPhrase);
-      return {'success': false, 'message': 'Failed to login'};
+      final jsonResponse = await response.stream.bytesToString();
+      final decodedResponse = json.decode(jsonResponse);
+      return {'success': false, 'message': decodedResponse['data']};
     }
 
   }
@@ -117,6 +121,9 @@ class ApiService {
       final decodedResponse = json.decode(jsonResponse);
 
       final message = decodedResponse['message'];
+      final selectedCountry = decodedResponse['data']['selected_country'];
+
+      await saveChosenCountry(id, selectedCountry);
       return {'success': true, 'message': message};
     }
     else
@@ -186,6 +193,8 @@ class ApiService {
       final decodedResponse = json.decode(jsonResponse);
 
       final message = decodedResponse['message'];
+      final prefs = await SharedPreferences.getInstance();
+      print(prefs.setString('chosenCountryName', ''));
       return {'success': true, 'message': message};
     }
     else {
@@ -218,5 +227,10 @@ class ApiService {
       return {'success': false, 'message': 'Failed to resend OTP'};
     }
 
+  }
+  static Future<void> saveChosenCountry(String countryId, String countryName) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('chosenCountryId', countryId);
+    await prefs.setString('chosenCountryName', countryName);
   }
 }

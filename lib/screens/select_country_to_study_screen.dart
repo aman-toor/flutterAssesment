@@ -1,11 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_assesment/screens/auth_screens/log_out_screen.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import '../../apis/api_file.dart';
-import '../../messages/toast_messages.dart';
+import '../apis/api_file.dart';
+import '../messages/toast_messages.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SelectCountryForStudyScreen extends StatefulWidget {
   const SelectCountryForStudyScreen({Key? key}) : super(key: key);
@@ -21,24 +20,30 @@ class _SelectCountryForStudyScreenState
   late List<bool> imageColorState;
   late int id = 0;
   bool isLoading = false;
-  bool isSuccessResponse=false;
+  late String selectedCountryName = '';
 
   @override
   void initState() {
     super.initState();
-    imageColorState=[];
-    selectCountry=ApiService.showCountries();
-     selectCountry.then((data) {
-      if (data['success'] == true) {
-        final countries = data['data']['countries'] as List<dynamic>;
-        imageColorState = List.generate(countries.length, (index) => false);
-
-      } else {
-        setState(() {
-          isSuccessResponse = false;
+    imageColorState = [];
+    selectCountry = ApiService.showCountries();
+    isCountryAlreadyChosen().then((isChosen) {
+      if (isChosen) {
+        getChosenCountryName().then((countryName) {
+          setState(() {
+            selectedCountryName = countryName!;
+          });
         });
       }
-    }).catchError((error) {});
+    });
+    selectCountry.then((data) {
+      if (data['success'] == true) {
+        final countries = data['countries'] as List<dynamic>;
+        setState(() {
+          imageColorState = List.generate(countries.length, (index) => false);
+        });
+      }
+    });
   }
 
   @override
@@ -87,7 +92,20 @@ class _SelectCountryForStudyScreenState
             const SizedBox(
               height: 50,
             ),
-            // if (isSuccessResponse == true) ...[
+            if (selectedCountryName.isNotEmpty) ...[
+              Center(
+                child: Text(
+                  "You are already associated with a company named as : $selectedCountryName",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+            if (selectedCountryName.isEmpty) ...[
               Expanded(
                 child: FutureBuilder<Map<String, dynamic>>(
                   future: selectCountry,
@@ -114,7 +132,6 @@ class _SelectCountryForStudyScreenState
                             final country = countries[index];
                             final imageUrl = country['flag'];
                             final countryName = country['name'];
-                            id = country['id'];
                             return Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -123,6 +140,7 @@ class _SelectCountryForStudyScreenState
                                     setState(() {
                                       imageColorState[index] =
                                           !imageColorState[index];
+                                      id = country['id'];
                                     });
                                   },
                                   child: ColorFiltered(
@@ -132,18 +150,21 @@ class _SelectCountryForStudyScreenState
                                           ? BlendMode.colorDodge
                                           : BlendMode.color,
                                     ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: SvgPicture.network(
-                                        imageUrl,
-                                        height: 70,
-                                        width: 50,
+                                    child: SizedBox(
+                                      height: 90,
+                                      width: 90,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: SvgPicture.network(
+                                          imageUrl,
+                                        fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                Text(countryName),
+                                Text(countryName,style: const TextStyle(color: Colors.grey),),
                               ],
                             );
                           },
@@ -153,13 +174,7 @@ class _SelectCountryForStudyScreenState
                   },
                 ),
               ),
-
-            // else if(isSuccessResponse==false) ...[
-            //   const Text("You are already associated with a company")
-            // ],
-            const SizedBox(
-              height: 30,
-            ),
+            ],
             SizedBox(
               width: 180,
               child: NeumorphicButton(
@@ -169,44 +184,52 @@ class _SelectCountryForStudyScreenState
                         setState(() {
                           isLoading = true;
                         });
-                        if (isSuccessResponse == true) {
-                          try {
-                            final response =
-                                await ApiService.selectCountryForStudy(
-                                    id.toString());
-                            setState(() {
-                              isLoading = false;
-                            });
-                            if (response['success']) {
+                        if (selectedCountryName.isEmpty) {
+                          if (id != 0) {
+                            try {
+                              final response =
+                                  await ApiService.selectCountryForStudy(
+                                      id.toString());
+                              setState(() {
+                                isLoading = false;
+                              });
+                              if (response['success']) {
+                                CustomSnackbar.show(
+                                    context: context,
+                                    message: response['message'],
+                                    textColor: Colors.green);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LogOutScreen()),
+                                );
+                              } else {
+                                CustomSnackbar.show(
+                                    context: context,
+                                    message: response['message'],
+                                    textColor: Colors.red);
+                              }
+                            } catch (error) {
+                              setState(() {
+                                isLoading = false;
+                              });
                               CustomSnackbar.show(
                                   context: context,
-                                  message: response['message'],
-                                  textColor: Colors.green);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LogOutScreen()),
-                              );
-                            } else {
-                              CustomSnackbar.show(
-                                  context: context,
-                                  message: response['message'],
+                                  message: 'failed to select',
                                   textColor: Colors.red);
                             }
-                          } catch (error) {
+                          } else {
                             setState(() {
                               isLoading = false;
                             });
-                            CustomSnackbar.show(
-                                context: context,
-                                message: 'failed to select',
-                                textColor: Colors.red);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please select a country first.'),
+                              ),
+                            );
                           }
                         }
                         else{
-                          setState(() {
-                            isLoading = false;
-                          });
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -246,5 +269,17 @@ class _SelectCountryForStudyScreenState
         ),
       ),
     );
+  }
+
+  // Function to check if a country has already been chosen
+  Future<bool> isCountryAlreadyChosen() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey('chosenCountryName');
+  }
+
+  // Function to retrieve the chosen country name
+  Future<String?> getChosenCountryName() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('chosenCountryName');
   }
 }

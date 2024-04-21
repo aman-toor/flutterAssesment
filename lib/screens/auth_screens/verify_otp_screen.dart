@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_assesment/screens/auth_screens/select_country_to_study_screen.dart';
+import 'package:flutter_assesment/screens/select_country_to_study_screen.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
@@ -100,7 +100,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                 fieldStyle: FieldStyle.underline,
                 otpFieldStyle: OtpFieldStyle(
                    enabledBorderColor: Colors.white,
-                  focusBorderColor: NeumorphicTheme.accentColor(context)
+                  focusBorderColor: Colors.white
                 ),
                 onChanged: (String code) {
                   otp = code;
@@ -232,7 +232,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     _timer = Timer.periodic(oneSecond, (Timer timer) {
       if (_resendTimer == 0) {
         setState(() {
-          isResendOtp = false; // Reset resend state
+          isResendOtp = false;
         });
         timer.cancel();
       } else {

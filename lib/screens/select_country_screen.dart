@@ -3,7 +3,7 @@ import 'package:flutter_assesment/screens/auth_screens/get_otp_screen.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../apis/api_file.dart';
+import '../apis/api_file.dart';
 
 class SelectCountry extends StatefulWidget {
   final String role;
