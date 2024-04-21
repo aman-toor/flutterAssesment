@@ -15,11 +15,16 @@ class WelcomeScreen extends StatelessWidget {
       body: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(color: Colors.grey),
-            child: Image.asset('assets/images/Startup.png'),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                alignment: Alignment.center,
+                image: AssetImage('assets/images/Startup.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: screenHeight * 0.53),
+            padding: EdgeInsets.only(top: screenHeight * 0.6),
             child: Container(
               decoration: BoxDecoration(
                   color: NeumorphicTheme.baseColor(context),

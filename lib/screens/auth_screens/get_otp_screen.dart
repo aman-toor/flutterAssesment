@@ -113,7 +113,7 @@ class _GetOtpScreenState extends State<GetOtpScreen> {
                 ),
               ),
               SizedBox(
-                height: screenHeight * 0.45,
+                height: screenHeight * 0.40,
               ),
               SizedBox(
                 width: 150,
