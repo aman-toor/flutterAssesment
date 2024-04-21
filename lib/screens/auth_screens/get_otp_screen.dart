@@ -22,8 +22,9 @@ class GetOtpScreen extends StatefulWidget {
 
 class _GetOtpScreenState extends State<GetOtpScreen> {
   TextEditingController phoneController = TextEditingController();
- bool isLoading=false;
+  bool isLoading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -32,7 +33,7 @@ class _GetOtpScreenState extends State<GetOtpScreen> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth= MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -74,14 +75,14 @@ class _GetOtpScreenState extends State<GetOtpScreen> {
                 ),
                 textAlign: TextAlign.center,
               ),
-               SizedBox(
-                height: screenHeight*0.03,
+              SizedBox(
+                height: screenHeight * 0.03,
               ),
               const Divider(
                 thickness: 2,
               ),
-               SizedBox(
-                height: screenHeight*0.05,
+              SizedBox(
+                height: screenHeight * 0.05,
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -89,8 +90,8 @@ class _GetOtpScreenState extends State<GetOtpScreen> {
                   children: [
                     SvgPicture.network(
                       widget.image,
-                      width: screenWidth*0.03,
-                      height: screenHeight*0.03,
+                      width: screenWidth * 0.03,
+                      height: screenHeight * 0.03,
                     ),
                     Expanded(
                       child: TextFormField(
@@ -112,14 +113,15 @@ class _GetOtpScreenState extends State<GetOtpScreen> {
                 ),
               ),
               SizedBox(
-                height: screenHeight*0.45,
+                height: screenHeight * 0.45,
               ),
               SizedBox(
                 width: 150,
                 child: NeumorphicButton(
-                  onPressed: () =>_handleLogIn(),
+                  onPressed: () => _handleLogIn(),
                   style: NeumorphicStyle(
-                    boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(20)),
+                    boxShape:
+                        NeumorphicBoxShape.roundRect(BorderRadius.circular(20)),
                     depth: 2,
                   ),
                   padding: const EdgeInsets.all(12.0),
@@ -128,13 +130,13 @@ class _GetOtpScreenState extends State<GetOtpScreen> {
                       : const Center(child: Text("Get OTP")),
                 ),
               ),
-
             ],
           ),
         ),
       ),
     );
   }
+
   void _handleLogIn() async {
     if (_formKey.currentState!.validate() && !isLoading) {
       setState(() {
@@ -144,19 +146,19 @@ class _GetOtpScreenState extends State<GetOtpScreen> {
       try {
         final response = widget.role == 'Student'
             ? await ApiService.studentLogin(
-          widget.telcode,
-          phoneController.text,
-        )
+                widget.telcode,
+                phoneController.text,
+              )
             : await ApiService.counsellorLogin(
-          widget.telcode,
-          phoneController.text,
-        );
+                widget.telcode,
+                phoneController.text,
+              );
 
         setState(() {
           isLoading = false;
         });
 
-        if (response['success']==true) {
+        if (response['success'] == true) {
           CustomSnackbar.show(
             context: context,
             message: response['message'],
@@ -172,7 +174,7 @@ class _GetOtpScreenState extends State<GetOtpScreen> {
             ),
           );
         } else {
-          if (response['success'] == false ) {
+          if (response['success'] == false) {
             CustomSnackbar.show(
               context: context,
               message: response['message'],
@@ -193,5 +195,4 @@ class _GetOtpScreenState extends State<GetOtpScreen> {
       }
     }
   }
-
 }

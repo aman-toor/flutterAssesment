@@ -33,7 +33,8 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             final data = snapshot.data!['data'];
-            final createdDate = DateTime.parse(data['created_at']).toString().split(' ')[0];
+            final createdDate =
+                DateTime.parse(data['created_at']).toString().split(' ')[0];
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -78,8 +79,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                             Text(
                               ' Update $createdDate',
                               style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.grey),
+                                  fontSize: 18, color: Colors.grey),
                             ),
                           ],
                         ),

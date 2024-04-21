@@ -14,7 +14,7 @@ class LogOutScreen extends StatefulWidget {
 
 class _LogOutScreenState extends State<LogOutScreen> {
   bool isLoadingLogout = false;
-  bool isLoadingDelete=false;
+  bool isLoadingDelete = false;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,8 @@ class _LogOutScreenState extends State<LogOutScreen> {
               child: NeumorphicButton(
                 onPressed: isLoadingLogout ? null : _handleLogOut,
                 style: NeumorphicStyle(
-                  boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(20)),
+                  boxShape:
+                      NeumorphicBoxShape.roundRect(BorderRadius.circular(20)),
                   depth: 2,
                 ),
                 padding: const EdgeInsets.all(12.0),
@@ -43,11 +44,11 @@ class _LogOutScreenState extends State<LogOutScreen> {
                   child: isLoadingLogout
                       ? const CircularProgressIndicator()
                       : Text(
-                    "Logout",
-                    style: TextStyle(
-                      color: NeumorphicTheme.accentColor(context),
-                    ),
-                  ),
+                          "Logout",
+                          style: TextStyle(
+                            color: NeumorphicTheme.accentColor(context),
+                          ),
+                        ),
                 ),
               ),
             ),
@@ -59,7 +60,8 @@ class _LogOutScreenState extends State<LogOutScreen> {
               child: NeumorphicButton(
                 onPressed: isLoadingDelete ? null : _handleDeleteAccount,
                 style: NeumorphicStyle(
-                  boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(20)),
+                  boxShape:
+                      NeumorphicBoxShape.roundRect(BorderRadius.circular(20)),
                   depth: 2,
                 ),
                 padding: const EdgeInsets.all(12.0),
@@ -67,11 +69,11 @@ class _LogOutScreenState extends State<LogOutScreen> {
                   child: isLoadingDelete
                       ? const CircularProgressIndicator()
                       : Text(
-                    "Delete User",
-                    style: TextStyle(
-                      color: NeumorphicTheme.accentColor(context),
-                    ),
-                  ),
+                          "Delete User",
+                          style: TextStyle(
+                            color: NeumorphicTheme.accentColor(context),
+                          ),
+                        ),
                 ),
               ),
             ),

@@ -5,9 +5,12 @@ import '../services/global.dart';
 
 class ApiService {
   static String Token = '';
+
   static Future<Map<String, dynamic>> fetchTermsAndConditions() async {
-    final response = await http.get(Uri.parse('${baseURL}terms-conditions'),
-      headers: headers, );
+    final response = await http.get(
+      Uri.parse('${baseURL}terms-conditions'),
+      headers: headers,
+    );
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
@@ -16,8 +19,10 @@ class ApiService {
   }
 
   static Future<Map<String, dynamic>> fetchCountryList() async {
-    final response = await http.get(Uri.parse('${baseURL}countries'),
-      headers: headers, );
+    final response = await http.get(
+      Uri.parse('${baseURL}countries'),
+      headers: headers,
+    );
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
@@ -25,12 +30,10 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> studentLogin(String code, String phoneNumber) async {
+  static Future<Map<String, dynamic>> studentLogin(
+      String code, String phoneNumber) async {
     var request = http.Request('POST', Uri.parse('${baseURL}student/login'));
-    request.body = json.encode({
-      "tel_code": code,
-      "phone": phoneNumber
-    });
+    request.body = json.encode({"tel_code": code, "phone": phoneNumber});
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -47,12 +50,10 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> counsellorLogin(String code, String phoneNumber) async {
+  static Future<Map<String, dynamic>> counsellorLogin(
+      String code, String phoneNumber) async {
     var request = http.Request('POST', Uri.parse('${baseURL}counsellor/login'));
-    request.body = json.encode({
-      "tel_code": code,
-      "phone": phoneNumber
-    });
+    request.body = json.encode({"tel_code": code, "phone": phoneNumber});
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
@@ -62,23 +63,18 @@ class ApiService {
       final decodedResponse = json.decode(jsonResponse);
       final message = decodedResponse['message'];
       return {'success': true, 'message': message};
-
-    }
-    else {
+    } else {
       final jsonResponse = await response.stream.bytesToString();
       final decodedResponse = json.decode(jsonResponse);
       return {'success': false, 'message': decodedResponse['data']};
     }
-
   }
 
-
-  static Future<Map<String, dynamic>> verifyOtp(String code, String phoneNumber) async {
-    var request = http.MultipartRequest('POST', Uri.parse('${baseURL}verify-otp'));
-    request.fields.addAll({
-      'code': code,
-      'phone': phoneNumber
-    });
+  static Future<Map<String, dynamic>> verifyOtp(
+      String code, String phoneNumber) async {
+    var request =
+        http.MultipartRequest('POST', Uri.parse('${baseURL}verify-otp'));
+    request.fields.addAll({'code': code, 'phone': phoneNumber});
 
     request.headers.addAll(headers);
 
@@ -89,34 +85,30 @@ class ApiService {
       final decodedResponse = json.decode(jsonResponse);
 
       final message = decodedResponse['message'];
-      final token=decodedResponse['data'];
-      final accesstoken=token['access_token'];
+      final token = decodedResponse['data'];
+      final accesstoken = token['access_token'];
       print(accesstoken);
-      Token=accesstoken;
+      Token = accesstoken;
       return {'success': true, 'message': message};
-    }
-    else {
+    } else {
       return {'success': false, 'message': 'Failed to verify'};
     }
-
   }
 
-   static Future<Map<String, dynamic>> selectCountryForStudy(String id)async{
+  static Future<Map<String, dynamic>> selectCountryForStudy(String id) async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $Token'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('${baseURL}select/country'));
-    request.fields.addAll({
-      'country_id':id
-    });
+    var request =
+        http.MultipartRequest('POST', Uri.parse('${baseURL}select/country'));
+    request.fields.addAll({'country_id': id});
 
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 200)
-    {
+    if (response.statusCode == 200) {
       final jsonResponse = await response.stream.bytesToString();
       final decodedResponse = json.decode(jsonResponse);
 
@@ -125,12 +117,9 @@ class ApiService {
 
       await saveChosenCountry(id, selectedCountry);
       return {'success': true, 'message': message};
-    }
-    else
-    {
+    } else {
       return {'success': false, 'message': 'Failed to select country'};
     }
-
   }
 
   static Future<Map<String, dynamic>> showCountries() async {
@@ -153,6 +142,7 @@ class ApiService {
       return {'success': false, 'error': response.reasonPhrase};
     }
   }
+
   static Future<Map<String, dynamic>> logOut() async {
     var headers = {
       'Accept': 'application/json',
@@ -170,14 +160,12 @@ class ApiService {
 
       final message = decodedResponse['message'];
       return {'success': true, 'message': message};
-    }
-    else {
+    } else {
       return {'success': true, 'message': 'failed to logout'};
     }
-
   }
 
-  static Future<Map<String, dynamic>> deleteAccount()async{
+  static Future<Map<String, dynamic>> deleteAccount() async {
     var headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $Token'
@@ -196,22 +184,16 @@ class ApiService {
       final prefs = await SharedPreferences.getInstance();
       print(prefs.setString('chosenCountryName', ''));
       return {'success': true, 'message': message};
-    }
-    else {
+    } else {
       return {'success': true, 'message': 'failed to delete'};
     }
-
   }
 
-
-  static Future<Map<String, dynamic>> resendOtp(String phone)async {
-    var headers = {
-      'Accept': 'application/json'
-    };
-    var request = http.MultipartRequest('POST', Uri.parse('${baseURL}resend-otp'));
-    request.fields.addAll({
-      'phone': phone
-    });
+  static Future<Map<String, dynamic>> resendOtp(String phone) async {
+    var headers = {'Accept': 'application/json'};
+    var request =
+        http.MultipartRequest('POST', Uri.parse('${baseURL}resend-otp'));
+    request.fields.addAll({'phone': phone});
 
     request.headers.addAll(headers);
 
@@ -222,13 +204,13 @@ class ApiService {
       final decodedResponse = json.decode(jsonResponse);
       final message = decodedResponse['message'];
       return {'success': true, 'message': message};
-    }
-    else {
+    } else {
       return {'success': false, 'message': 'Failed to resend OTP'};
     }
-
   }
-  static Future<void> saveChosenCountry(String countryId, String countryName) async {
+
+  static Future<void> saveChosenCountry(
+      String countryId, String countryName) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('chosenCountryId', countryId);
     await prefs.setString('chosenCountryName', countryName);

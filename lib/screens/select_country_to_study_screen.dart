@@ -157,14 +157,17 @@ class _SelectCountryForStudyScreenState
                                         borderRadius: BorderRadius.circular(10),
                                         child: SvgPicture.network(
                                           imageUrl,
-                                        fit: BoxFit.cover,
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                Text(countryName,style: const TextStyle(color: Colors.grey),),
+                                Text(
+                                  countryName,
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
                               ],
                             );
                           },
@@ -228,8 +231,7 @@ class _SelectCountryForStudyScreenState
                               ),
                             );
                           }
-                        }
-                        else{
+                        } else {
                           Navigator.push(
                             context,
                             MaterialPageRoute(

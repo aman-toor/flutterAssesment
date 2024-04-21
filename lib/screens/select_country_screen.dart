@@ -1,4 +1,3 @@
-
 import 'package:flutter_assesment/screens/auth_screens/get_otp_screen.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,6 +6,7 @@ import '../apis/api_file.dart';
 
 class SelectCountry extends StatefulWidget {
   final String role;
+
   const SelectCountry({super.key, required this.role});
 
   @override
@@ -88,48 +88,52 @@ class _SelectCountryState extends State<SelectCountry> {
                   _allResult = countryData;
 
                   return ListView.separated(
-                    itemBuilder: (context, index) {
-                      final List<dynamic> displayData =
-                      _searchResult.isNotEmpty ? _searchResult : countryData;
+                      itemBuilder: (context, index) {
+                        final List<dynamic> displayData =
+                            _searchResult.isNotEmpty
+                                ? _searchResult
+                                : countryData;
 
-                      final imageUrl = displayData[index]['flag'];
-                      final countryName = displayData[index]['name'];
-                      final countryCode = displayData[index]['tel_code'];
-                      return ListTile(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => GetOtpScreen(
-                                image: imageUrl,
-                                telcode: countryCode,
-                                role: widget.role,
+                        final imageUrl = displayData[index]['flag'];
+                        final countryName = displayData[index]['name'];
+                        final countryCode = displayData[index]['tel_code'];
+                        return ListTile(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => GetOtpScreen(
+                                  image: imageUrl,
+                                  telcode: countryCode,
+                                  role: widget.role,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        title: Row(
-                          children: [
-                            SvgPicture.network(imageUrl, width: 20, height: 20),
-                            const SizedBox(width: 10),
-                            Text(
-                              countryName,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                          ],
-                        ),
-                        trailing: Text(
-                          countryCode,
-                          style: const TextStyle(fontSize: 15),
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => const Divider(
-                      thickness: 2,
-                    ),
-                    itemCount:  _searchResult.isNotEmpty ? _searchResult.length : countryData.length
-                  );
+                            );
+                          },
+                          title: Row(
+                            children: [
+                              SvgPicture.network(imageUrl,
+                                  width: 20, height: 20),
+                              const SizedBox(width: 10),
+                              Text(
+                                countryName,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ],
+                          ),
+                          trailing: Text(
+                            countryCode,
+                            style: const TextStyle(fontSize: 15),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => const Divider(
+                            thickness: 2,
+                          ),
+                      itemCount: _searchResult.isNotEmpty
+                          ? _searchResult.length
+                          : countryData.length);
                 }
               },
             ),
@@ -147,7 +151,10 @@ class _SelectCountryState extends State<SelectCountry> {
     }
 
     for (var country in _allResult) {
-      if (country['name'].toString().toLowerCase().contains(text.toLowerCase())) {
+      if (country['name']
+          .toString()
+          .toLowerCase()
+          .contains(text.toLowerCase())) {
         _searchResult.add(country);
       }
     }
